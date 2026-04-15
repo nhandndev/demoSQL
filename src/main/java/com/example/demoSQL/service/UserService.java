@@ -7,11 +7,10 @@ import com.example.demoSQL.entity.User;
 import com.example.demoSQL.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import com.example.demoSQL.dto.response.UserResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -49,5 +48,18 @@ public class UserService {
     }
     public void deleteUserById(Long Id){
         userRepository.deleteById(Id);
+    }
+    public UserResponse findByName(String name) {
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new RuntimeException("User not found"));
+        return userResponse(user);
+    }
+    public UserResponse userResponse(User user){
+        UserResponse userResponse = new UserResponse();
+        userResponse.setId(user.getId());
+        userResponse.setUsername(user.getUsername());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setFirstName(user.getFirstName());
+        userResponse.setLastName(user.getLastName());
+        return userResponse;
     }
 }
