@@ -16,6 +16,7 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
     public User addUser(@RequestBody UserCreationRequest userCreationRequest) {
         User newUser = new User();
         newUser.setUsername(userCreationRequest.getUsername());
@@ -25,10 +26,12 @@ public class UserService {
         newUser.setLastName(userCreationRequest.getLastName());
         return userRepository.save(newUser);
     }
-    public List<User> getAllUsers(){
+
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-    public UserResponse getUserById(Long Id){
+
+    public UserResponse getUserById(Long Id) {
         User user = userRepository.findById(Id).orElseThrow(() -> new RuntimeException("User not found"));
         UserResponse userResponse = new UserResponse();
         userResponse.setId(user.getId());
@@ -38,7 +41,8 @@ public class UserService {
         userResponse.setLastName(user.getLastName());
         return userResponse;
     }
-    public User updateUser( Long Id , UserUpdateRequest userUpdateRequest){
+
+    public User updateUser(Long Id, UserUpdateRequest userUpdateRequest) {
         User user = userRepository.findById(Id).orElse(null);
         user.setFirstName(userUpdateRequest.getFirstName());
         user.setLastName(userUpdateRequest.getLastName());
@@ -46,14 +50,17 @@ public class UserService {
         user.setPassword(userUpdateRequest.getPassword());
         return userRepository.save(user);
     }
-    public void deleteUserById(Long Id){
+
+    public void deleteUserById(Long Id) {
         userRepository.deleteById(Id);
     }
+
     public UserResponse findByName(String name) {
         User user = userRepository.findByUsername(name).orElseThrow(() -> new RuntimeException("User not found"));
         return userResponse(user);
     }
-    public UserResponse userResponse(User user){
+
+    public UserResponse userResponse(User user) {
         UserResponse userResponse = new UserResponse();
         userResponse.setId(user.getId());
         userResponse.setUsername(user.getUsername());
@@ -62,4 +69,28 @@ public class UserService {
         userResponse.setLastName(user.getLastName());
         return userResponse;
     }
+
+    public UserResponse getUserByName(User user) {
+        User user1 = userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
+        return userResponse(user1);
+    }
+    public UserResponse searchUser(String UserName , String Email , String firstName , String lastName) {
+        if(UserName!=null&&Email!=null){
+            User user = userRepository.findByUsernameAndEmail(UserName,Email).orElseThrow(() -> new RuntimeException("User not found"));
+            return userResponse(user);
+        }
+        else if (UserName!=null){
+            User user = userRepository.findByUsername(UserName).orElseThrow(() -> new RuntimeException("User not found"));
+            return userResponse(user);
+        }
+        else if  (Email!=null){
+            User user = userRepository.findByEmail(Email).orElseThrow(() -> new RuntimeException("User not found"));
+            return userResponse(user);
+        }
+        throw new RuntimeException("User not found");
+
+    }
 }
+
+
+

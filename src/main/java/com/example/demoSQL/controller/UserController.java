@@ -39,6 +39,15 @@ public class UserController {
     public UserResponse getUserByUserName(@PathVariable String UserName) {
         return userService.findByName(UserName);
     }
+    @GetMapping("/user/username/search")
+    public UserResponse getUserByName(
+            @RequestParam(required = false) String UserName,
+            @RequestParam(required = false) String Email,
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName
+    ) {
+        return userService.searchUser(UserName, Email, firstName, lastName);
+    }
 
 
 }
