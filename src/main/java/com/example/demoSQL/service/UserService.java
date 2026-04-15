@@ -1,10 +1,9 @@
 package com.example.demoSQL.service;
-
+import com.example.demoSQL.repository.UserRepository;
 import com.example.demoSQL.dto.UserCreationRequest;
 import com.example.demoSQL.dto.UserUpdateRequest;
 import com.example.demoSQL.dto.response.UserResponse;
 import com.example.demoSQL.entity.User;
-import com.example.demoSQL.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +27,7 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+       return userRepository.findAll();
     }
 
     public UserResponse getUserById(Long Id) {

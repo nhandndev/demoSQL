@@ -1,17 +1,18 @@
 package com.example.demoSQL.dto.response;
 
 public class UserResponse {
-    private Long id;
+    private Long Id;
     private String username;
     private String email;
     private String firstName;
     private String lastName;
+
     public Long getId() {
-        return id;
+        return Id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        Id = id;
     }
 
     public String getUsername() {

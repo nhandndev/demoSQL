@@ -1,4 +1,5 @@
 package com.example.demoSQL.controller;
+import com.example.demoSQL.dto.ApiResponse;
 import com.example.demoSQL.dto.UserCreationRequest;
 import com.example.demoSQL.dto.UserUpdateRequest;
 
@@ -7,6 +8,7 @@ import com.example.demoSQL.entity.User;
 import com.example.demoSQL.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +18,13 @@ public class UserController {
     @Autowired
     private UserService userService;
     @PostMapping("/user")
-    public User addUser(@Valid @RequestBody UserCreationRequest userCreationRequest) {
-        return userService.addUser(userCreationRequest);
+    public ApiResponse<User> createUser(@Valid @RequestBody UserCreationRequest userCreationRequest)
+    {
+        ApiResponse<User> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setMessage("success");
+        apiResponse.setResult(userService.addUser(userCreationRequest));
+        return apiResponse;
     }
     @GetMapping("/user")
     public List<User> getAllUser(){
