@@ -1,6 +1,8 @@
 package com.example.demoSQL.controller;
 import com.example.demoSQL.dto.UserCreationRequest;
 import com.example.demoSQL.dto.UserUpdateRequest;
+
+import com.example.demoSQL.dto.response.UserResponse;
 import com.example.demoSQL.entity.User;
 import com.example.demoSQL.service.UserService;
 import jakarta.validation.Valid;
@@ -22,7 +24,7 @@ public class UserController {
         return userService.getAllUsers();
     }
     @GetMapping("/user/{Id}")
-    public User getUserById(@PathVariable Long Id) {
+    public UserResponse getUserById(@PathVariable Long Id) {
         return userService.getUserById(Id);
     }
     @PutMapping("/user/{Id}")

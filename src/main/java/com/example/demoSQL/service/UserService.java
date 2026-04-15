@@ -2,12 +2,14 @@ package com.example.demoSQL.service;
 
 import com.example.demoSQL.dto.UserCreationRequest;
 import com.example.demoSQL.dto.UserUpdateRequest;
+import com.example.demoSQL.dto.response.UserResponse;
 import com.example.demoSQL.entity.User;
 import com.example.demoSQL.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import com.example.demoSQL.dto.response.UserResponse;
 
 import java.util.List;
 
@@ -27,8 +29,15 @@ public class UserService {
     public List<User> getAllUsers(){
         return userRepository.findAll();
     }
-    public User getUserById(Long Id){
-        return userRepository.findById(Id).orElseThrow(() -> new RuntimeException("User not found"));
+    public UserResponse getUserById(Long Id){
+        User user = userRepository.findById(Id).orElseThrow(() -> new RuntimeException("User not found"));
+        UserResponse userResponse = new UserResponse();
+        userResponse.setId(user.getId());
+        userResponse.setUsername(user.getUsername());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setFirstName(user.getFirstName());
+        userResponse.setLastName(user.getLastName());
+        return userResponse;
     }
     public User updateUser( Long Id , UserUpdateRequest userUpdateRequest){
         User user = userRepository.findById(Id).orElse(null);

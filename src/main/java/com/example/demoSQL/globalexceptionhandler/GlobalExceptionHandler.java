@@ -10,11 +10,11 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String,Object> handleException(RuntimeException ex){
-        Map<String,Object> error = new HashMap<>();
-        error.put("message", ex.getMessage());
-        return error;
+    public Map<String,Object> handleException(Exception e){
+        Map<String,Object> map = new HashMap<>();
+        map.put("message",e.getMessage());
+        return map;
     }
 }
