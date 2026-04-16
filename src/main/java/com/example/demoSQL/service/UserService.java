@@ -9,22 +9,25 @@ import com.example.demoSQL.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import lombok.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class  UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User addUser(@RequestBody UserCreationRequest userCreationRequest) {
-        User newUser = new User();
-        newUser.setUsername(userCreationRequest.getUsername());
-        newUser.setPassword(userCreationRequest.getPassword());
-        newUser.setEmail(userCreationRequest.getEmail());
-        newUser.setFirstName(userCreationRequest.getFirstName());
-        newUser.setLastName(userCreationRequest.getLastName());
+    public User addUser( UserCreationRequest userCreationRequest) {
+        User newUser = User.builder()
+                .username(userCreationRequest.getUsername())
+                .password(userCreationRequest.getPassword())
+                .email(userCreationRequest.getEmail())
+                .lastName(userCreationRequest.getLastName())
+                .firstName(userCreationRequest.getFirstName())
+                .build();
+
         return userRepository.save(newUser);
     }
 
@@ -34,17 +37,18 @@ public class UserService {
 
     public UserResponse getUserById(Long Id) {
         User user = userRepository.findById(Id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        UserResponse userResponse = new UserResponse();
-        userResponse.setId(user.getId());
-        userResponse.setUsername(user.getUsername());
-        userResponse.setEmail(user.getEmail());
-        userResponse.setFirstName(user.getFirstName());
-        userResponse.setLastName(user.getLastName());
+        UserResponse userResponse = UserResponse.builder()
+                .username(user.getUsername())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .Id(user.getId())
+                .build();
         return userResponse;
     }
 
     public User updateUser(Long Id, UserUpdateRequest userUpdateRequest) {
-        User user = userRepository.findById(Id).orElse(null);
+        User user = userRepository.findById(Id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         user.setFirstName(userUpdateRequest.getFirstName());
         user.setLastName(userUpdateRequest.getLastName());
         user.setEmail(userUpdateRequest.getEmail());
@@ -82,6 +86,7 @@ public class UserService {
         }
         else if (UserName!=null){
             User user = userRepository.findByUsername(UserName).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+            return userResponse(user);
         }
         else if  (Email!=null){
             User user = userRepository.findByEmail(Email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));

@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
         try {
             errorCode = ErrorCode.valueOf(enumsKey);
         } catch (IllegalArgumentException e) {
-            
+
         }
         apiResponse.setMessage(errorCode.getMessage());
         apiResponse.setCode(errorCode.getCode());
