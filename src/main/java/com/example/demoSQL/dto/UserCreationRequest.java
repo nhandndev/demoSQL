@@ -1,16 +1,17 @@
 package com.example.demoSQL.dto;
 import com.example.demoSQL.entity.User;
+import com.example.demoSQL.globalexceptionhandler.ErrorCode;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class UserCreationRequest {
-    @NotBlank(message = "userName must not be blanked")
+    @NotBlank(message = "USERNAME_INVALID")
     private String username;
     @NotBlank
-    @Size(min = 5, max = 100,message = "password must not be min 5 or max 100")
+    @Size(min = 5, max = 100,message = "PASSWORD_INVALID")
     private String password;
-    @Email
+    @Email(message = "EMAIL_INVALID")
     private String email;
     private String firstName;
     private String lastName;
