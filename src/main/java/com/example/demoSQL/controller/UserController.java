@@ -22,7 +22,6 @@ public class UserController {
     {
         ApiResponse<User> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
-        apiResponse.setMessage("success");
         apiResponse.setResult(userService.addUser(userCreationRequest));
         return apiResponse;
     }

@@ -1,4 +1,6 @@
 package com.example.demoSQL.service;
+import com.example.demoSQL.globalexceptionhandler.AppException;
+import com.example.demoSQL.globalexceptionhandler.ErrorCode;
 import com.example.demoSQL.repository.UserRepository;
 import com.example.demoSQL.dto.UserCreationRequest;
 import com.example.demoSQL.dto.UserUpdateRequest;
@@ -31,7 +33,7 @@ public class UserService {
     }
 
     public UserResponse getUserById(Long Id) {
-        User user = userRepository.findById(Id).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(Id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         UserResponse userResponse = new UserResponse();
         userResponse.setId(user.getId());
         userResponse.setUsername(user.getUsername());
@@ -55,7 +57,7 @@ public class UserService {
     }
 
     public UserResponse findByName(String name) {
-        User user = userRepository.findByUsername(name).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return userResponse(user);
     }
 
@@ -70,23 +72,22 @@ public class UserService {
     }
 
     public UserResponse getUserByName(User user) {
-        User user1 = userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user1 = userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return userResponse(user1);
     }
     public UserResponse searchUser(String UserName , String Email , String firstName , String lastName) {
         if(UserName!=null&&Email!=null){
-            User user = userRepository.findByUsernameAndEmail(UserName,Email).orElseThrow(() -> new RuntimeException("User not found"));
+            User user = userRepository.findByUsernameAndEmail(UserName,Email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
             return userResponse(user);
         }
         else if (UserName!=null){
-            User user = userRepository.findByUsername(UserName).orElseThrow(() -> new RuntimeException("User not found"));
-            return userResponse(user);
+            User user = userRepository.findByUsername(UserName).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         }
         else if  (Email!=null){
-            User user = userRepository.findByEmail(Email).orElseThrow(() -> new RuntimeException("User not found"));
+            User user = userRepository.findByEmail(Email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
             return userResponse(user);
         }
-        throw new RuntimeException("User not found");
+        throw new AppException(ErrorCode.USER_NOT_EXISTED);
 
     }
 }

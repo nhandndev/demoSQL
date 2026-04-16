@@ -8,7 +8,7 @@ public class UserCreationRequest {
     @NotBlank(message = "userName must not be blanked")
     private String username;
     @NotBlank
-    @Size(min = 1, max = 100)
+    @Size(min = 5, max = 100,message = "password must not be min 5 or max 100")
     private String password;
     @Email
     private String email;

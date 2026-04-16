@@ -1,8 +1,11 @@
 package com.example.demoSQL.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse <T>{
-    private int code = 404 ;
-    private String message = "Fail";
+    private int code ;
+    private String message ;
     private T result ;
     public int getCode() {
         return code;
