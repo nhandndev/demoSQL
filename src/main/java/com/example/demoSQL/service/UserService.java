@@ -1,6 +1,7 @@
 package com.example.demoSQL.service;
 import com.example.demoSQL.globalexceptionhandler.AppException;
 import com.example.demoSQL.globalexceptionhandler.ErrorCode;
+import com.example.demoSQL.mapper.UserMapper;
 import com.example.demoSQL.repository.UserRepository;
 import com.example.demoSQL.dto.UserCreationRequest;
 import com.example.demoSQL.dto.UserUpdateRequest;
@@ -8,7 +9,6 @@ import com.example.demoSQL.dto.response.UserResponse;
 import com.example.demoSQL.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import lombok.*;
 
 import java.util.List;
@@ -18,17 +18,14 @@ import java.util.Optional;
 public class  UserService {
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private UserMapper userMapper;
     public User addUser( UserCreationRequest userCreationRequest) {
-        User newUser = User.builder()
-                .username(userCreationRequest.getUsername())
-                .password(userCreationRequest.getPassword())
-                .email(userCreationRequest.getEmail())
-                .lastName(userCreationRequest.getLastName())
-                .firstName(userCreationRequest.getFirstName())
-                .build();
-
-        return userRepository.save(newUser);
+        if(userRepository.existsById(userCreationRequest.getId())) {
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+        User user = userMapper.toUser(userCreationRequest);
+        return userRepository.save(user);
     }
 
     public List<User> getAllUsers() {
