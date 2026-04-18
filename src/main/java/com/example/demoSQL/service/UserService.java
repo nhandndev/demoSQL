@@ -7,22 +7,30 @@ import com.example.demoSQL.dto.UserCreationRequest;
 import com.example.demoSQL.dto.UserUpdateRequest;
 import com.example.demoSQL.dto.response.UserResponse;
 import com.example.demoSQL.entity.User;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
 @Service
 public class  UserService {
     @Autowired
-    private UserRepository userRepository;
+     UserRepository userRepository;
     @Autowired
-    private UserMapper userMapper;
+     UserMapper userMapper;
     public UserResponse addUser(UserCreationRequest userCreationRequest) {
+
         if(userRepository.existsByUsername(userCreationRequest.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User user = userMapper.toUser(userCreationRequest);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
