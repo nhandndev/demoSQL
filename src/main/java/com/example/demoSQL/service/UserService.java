@@ -9,10 +9,8 @@ import com.example.demoSQL.dto.response.UserResponse;
 import com.example.demoSQL.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import lombok.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class  UserService {
@@ -20,12 +18,13 @@ public class  UserService {
     private UserRepository userRepository;
     @Autowired
     private UserMapper userMapper;
-    public User addUser( UserCreationRequest userCreationRequest) {
-        if(userRepository.existsById(userCreationRequest.getId())) {
+    public UserResponse addUser(UserCreationRequest userCreationRequest) {
+        if(userRepository.existsByUsername(userCreationRequest.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
         User user = userMapper.toUser(userCreationRequest);
-        return userRepository.save(user);
+        userRepository.save(user);
+        return userMapper.toUserResponse(user);
     }
 
     public List<User> getAllUsers() {
@@ -34,22 +33,13 @@ public class  UserService {
 
     public UserResponse getUserById(Long Id) {
         User user = userRepository.findById(Id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        UserResponse userResponse = UserResponse.builder()
-                .username(user.getUsername())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .Id(user.getId())
-                .build();
+        UserResponse userResponse = userMapper.toUserResponse(user);
         return userResponse;
     }
 
     public User updateUser(Long Id, UserUpdateRequest userUpdateRequest) {
         User user = userRepository.findById(Id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        user.setFirstName(userUpdateRequest.getFirstName());
-        user.setLastName(userUpdateRequest.getLastName());
-        user.setEmail(userUpdateRequest.getEmail());
-        user.setPassword(userUpdateRequest.getPassword());
+        userMapper.updateUser(userUpdateRequest,user);
         return userRepository.save(user);
     }
 
@@ -63,12 +53,7 @@ public class  UserService {
     }
 
     public UserResponse userResponse(User user) {
-        UserResponse userResponse = new UserResponse();
-        userResponse.setId(user.getId());
-        userResponse.setUsername(user.getUsername());
-        userResponse.setEmail(user.getEmail());
-        userResponse.setFirstName(user.getFirstName());
-        userResponse.setLastName(user.getLastName());
+        UserResponse userResponse = userMapper.toUserResponse(user);
         return userResponse;
     }
 

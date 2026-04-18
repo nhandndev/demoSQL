@@ -18,9 +18,9 @@ public class UserController {
     @Autowired
     private UserService userService;
     @PostMapping("/user")
-    public ApiResponse<User> createUser(@Valid @RequestBody UserCreationRequest userCreationRequest)
+    public ApiResponse<UserResponse> createUser(@Valid @RequestBody UserCreationRequest userCreationRequest)
     {
-        ApiResponse<User> apiResponse = new ApiResponse<>();
+        ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
         apiResponse.setResult(userService.addUser(userCreationRequest));
         return apiResponse;
