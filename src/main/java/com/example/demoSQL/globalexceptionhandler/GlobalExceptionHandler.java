@@ -19,33 +19,35 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AppException.class)
     ResponseEntity<ApiResponse> handleAppException(AppException ex){
         ErrorCode errorCode = ex.getErrorCode();
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setMessage(errorCode.getMessage());
-        apiResponse.setCode(errorCode.getCode());
-        apiResponse.setResult(null);
+        ApiResponse apiResponse = ApiResponse.builder()
+                .message(ex.getMessage())
+                .code(errorCode.getCode())
+                .result(null)
+                .build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
     }
     @ExceptionHandler(Exception.class)
     ResponseEntity<ApiResponse> handleAppException(RuntimeException ex){
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXITED.getCode());
-        apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXITED.getMessage());
-        apiResponse.setResult(null);
+        ApiResponse apiResponse =  ApiResponse.builder()
+                .code(ErrorCode.UNCATEGORIZED_EXITED.getCode())
+                .message(ErrorCode.UNCATEGORIZED_EXITED.getMessage())
+                .result(null)
+                .build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
-        ApiResponse<Void> apiResponse = new ApiResponse<>();
         String enumsKey = ex.getFieldError().getDefaultMessage();
         ErrorCode errorCode = ErrorCode.KEY_INVALID;
         try {
             errorCode = ErrorCode.valueOf(enumsKey);
         } catch (IllegalArgumentException e) {
-
         }
-        apiResponse.setMessage(errorCode.getMessage());
-        apiResponse.setCode(errorCode.getCode());
-        apiResponse.setResult(null);
+        ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .result(null)
+                .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
     }
 }

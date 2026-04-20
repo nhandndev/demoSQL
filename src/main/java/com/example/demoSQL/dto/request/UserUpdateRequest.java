@@ -1,4 +1,4 @@
-package com.example.demoSQL.dto;
+package com.example.demoSQL.dto.request;
 
 import lombok.AccessLevel;
 import lombok.Getter;
