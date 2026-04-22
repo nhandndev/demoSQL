@@ -35,19 +35,21 @@ public class AuthenticationService {
         var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-       boolean authenticated = passwordEncoder.matches(user.getPassword(),request.getPassword());
+       boolean authenticated = passwordEncoder.matches(request.getPassword(),user.getPassword());
         if(!authenticated) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
-       String Token = generateToken(request.getUsername() );
+       String token = generateToken(user.getUsername() );
         return AuthenticationResponse.builder()
                 .authenticated(authenticated)
-                .token(Token)
+                .token(token)
                 .build();
     }
 
     public String generateToken(String username) {
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
+        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.ES256)
+                .type(JOSEObjectType.JWT)
+                .build();
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(username)
                 .issuer("DoanNgocNhan")
@@ -62,6 +64,7 @@ public class AuthenticationService {
         try{
             jwsObject.sign(new MACSigner(SIGN_KEY));
         }catch(JOSEException e){
+            throw new AppException(ErrorCode.TOKEN_CANNOT_CREATE);
         }
        return jwsObject.serialize();
     }
