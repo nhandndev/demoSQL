@@ -41,13 +41,13 @@ public class AuthenticationService {
         }
        String token = generateToken(user.getUsername() );
         return AuthenticationResponse.builder()
-                .authenticated(authenticated)
+                .authenticated(true)
                 .token(token)
                 .build();
     }
 
     public String generateToken(String username) {
-        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.ES256)
+        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS256)
                 .type(JOSEObjectType.JWT)
                 .build();
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
