@@ -17,14 +17,14 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.util.Arrays;
+
 import java.util.Date;
-import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +32,8 @@ import java.util.HashSet;
 public class AuthenticationService {
 
     @NonFinal
-    protected static final String SIGN_KEY =
-            "1234567890123456789012345678901234567890123456789012345678901234";
+    @Value("${jwt.signerKey}")
+    protected String SIGN_KEY ;
 
     UserRepository userRepository;
     public IntrospectResponse introspect(IntrospectRequest introspectRequest)

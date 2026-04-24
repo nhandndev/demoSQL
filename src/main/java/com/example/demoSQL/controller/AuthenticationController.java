@@ -17,7 +17,7 @@ import java.text.ParseException;
 @Builder
 public class AuthenticationController {
     AuthenticationService authenticationService;
-    @PostMapping("/Log-in")
+    @PostMapping("/token")
     ApiResponse<AuthenticationResponse> authentication(@RequestBody AuthenticationRequest authenticationRequest) {
         var result = authenticationService.authenticate(authenticationRequest);
         return ApiResponse.<AuthenticationResponse>builder()
