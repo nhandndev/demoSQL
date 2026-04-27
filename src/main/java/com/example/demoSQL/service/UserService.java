@@ -1,4 +1,5 @@
 package com.example.demoSQL.service;
+import com.example.demoSQL.enums.Role;
 import com.example.demoSQL.globalexceptionhandler.AppException;
 import com.example.demoSQL.globalexceptionhandler.ErrorCode;
 import com.example.demoSQL.mapper.UserMapper;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
 import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
@@ -31,6 +34,9 @@ public class  UserService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User user = userMapper.toUser(userCreationRequest);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        user.setRoles(roles);
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
