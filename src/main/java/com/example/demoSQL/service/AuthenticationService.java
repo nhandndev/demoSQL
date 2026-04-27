@@ -5,6 +5,7 @@ import com.example.demoSQL.dto.request.AuthenticationRequest;
 import com.example.demoSQL.dto.request.IntrospectRequest;
 import com.example.demoSQL.dto.response.AuthenticationResponse;
 import com.example.demoSQL.dto.response.IntrospectResponse;
+import com.example.demoSQL.entity.User;
 import com.example.demoSQL.globalexceptionhandler.AppException;
 import com.example.demoSQL.globalexceptionhandler.ErrorCode;
 import com.example.demoSQL.repository.UserRepository;
@@ -35,7 +36,6 @@ public class AuthenticationService {
     @NonFinal
     @Value("${jwt.signerKey}")
     protected String SIGN_KEY ;
-
     UserRepository userRepository;
     public IntrospectResponse introspect(IntrospectRequest introspectRequest)
     throws JOSEException , ParseException {
@@ -55,25 +55,24 @@ public class AuthenticationService {
         if(!authenticated) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
-       String token = generateToken(user.getUsername() );
+       String token = generateToken(user);
         return AuthenticationResponse.builder()
                 .authenticated(true)
                 .token(token)
                 .build();
     }
-
-    public String generateToken(String username) {
+    public String generateToken(User user) {
         JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS256)
                 .type(JOSEObjectType.JWT)
                 .build();
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(username)
+                .subject(user.getUsername())
                 .issuer("DoanNgocNhan")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         new Date().getTime() + 3600 * 1000
                 ))
-                .claim("nhan","custom")
+                .claim("scope",buildScope(user))
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(header,payload);
@@ -83,6 +82,12 @@ public class AuthenticationService {
             throw new AppException(ErrorCode.TOKEN_CANNOT_CREATE);
         }
        return jwsObject.serialize();
+    }
+    public String buildScope(User user) {
+        if(user.getRoles().isEmpty() || user.getRoles() == null) {
+            return "";
+        }
+        return String.join(" ", user.getRoles());
     }
 
 }

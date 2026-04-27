@@ -25,7 +25,7 @@ public class UserController {
                 .build();
         return apiResponse;
     }
-    @GetMapping("/user")
+    @GetMapping("/users")
     public List<User> getAllUser(){
         return userService.getAllUsers();
     }
