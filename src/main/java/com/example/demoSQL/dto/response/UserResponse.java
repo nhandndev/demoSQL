@@ -1,13 +1,10 @@
 package com.example.demoSQL.dto.response;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Set;
-
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

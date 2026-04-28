@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import com.example.demoSQL.dto.response.UserResponse;
 import java.util.HashSet;
 import java.util.List;
 @RequiredArgsConstructor
@@ -41,8 +41,15 @@ public class  UserService {
         return userMapper.toUserResponse(user);
     }
 
-    public List<User> getAllUsers() {
-       return userRepository.findAll();
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> UserResponse.builder()
+                        .username(user.getUsername())
+                        .roles(user.getRoles())
+                        .Id(user.getId())
+                        .email(user.getEmail())
+                        .build())
+                .toList();
     }
 
     public UserResponse getUserById(Long Id) {

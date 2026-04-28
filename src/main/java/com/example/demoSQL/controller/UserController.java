@@ -7,11 +7,13 @@ import com.example.demoSQL.dto.response.UserResponse;
 import com.example.demoSQL.entity.User;
 import com.example.demoSQL.service.UserService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Slf4j
 @RestController
 public class UserController {
     @Autowired
@@ -26,8 +28,16 @@ public class UserController {
         return apiResponse;
     }
     @GetMapping("/users")
-    public List<User> getAllUser(){
-        return userService.getAllUsers();
+    public ApiResponse<List<UserResponse>> getAllUser(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Username : {}", authentication.getName());
+        authentication.getAuthorities().forEach(authority -> {
+            log.info("authority : {}", authority);
+        });
+        return ApiResponse.<List<UserResponse>>builder()
+                .code(200)
+                .result(userService.getAllUsers())
+                .build();
     }
     @GetMapping("/user/{Id}")
     public UserResponse getUserById(@PathVariable Long Id) {
@@ -54,6 +64,5 @@ public class UserController {
     ) {
         return userService.searchUser(UserName, Email, firstName, lastName);
     }
-
 
 }
