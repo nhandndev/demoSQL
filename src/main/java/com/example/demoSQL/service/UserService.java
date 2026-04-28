@@ -12,6 +12,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,18 +43,13 @@ public class  UserService {
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(user -> UserResponse.builder()
-                        .username(user.getUsername())
-                        .roles(user.getRoles())
-                        .Id(user.getId())
-                        .email(user.getEmail())
-                        .build())
+                .map(user -> userMapper.toUserResponse(user))
                 .toList();
     }
-
+    @PostAuthorize("returnObject.username == authentication.name or hasRole('ADMIN')")
     public UserResponse getUserById(Long Id) {
         User user = userRepository.findById(Id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         UserResponse userResponse = userMapper.toUserResponse(user);
@@ -96,7 +94,11 @@ public class  UserService {
             return userResponse(user);
         }
         throw new AppException(ErrorCode.USER_NOT_EXISTED);
-
+    }
+    public UserResponse getMyInfo(){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return userMapper.toUserResponse(user);
     }
 }
 

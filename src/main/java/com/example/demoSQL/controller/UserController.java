@@ -64,5 +64,12 @@ public class UserController {
     ) {
         return userService.searchUser(UserName, Email, firstName, lastName);
     }
+    @GetMapping("/user/my-ìno")
+    public ApiResponse<UserResponse> getMyInfo() {
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .result(userService.getMyInfo())
+                .build();
+    }
 
 }
