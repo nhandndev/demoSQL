@@ -84,7 +84,7 @@ public class AuthenticationService {
        return jwsObject.serialize();
     }
     public String buildScope(User user) {
-        if(user.getRoles().isEmpty() || user.getRoles() == null) {
+        if(user.getRoles()==null || user.getRoles().isEmpty()) {
             return "";
         }
         return String.join(" ", user.getRoles());
