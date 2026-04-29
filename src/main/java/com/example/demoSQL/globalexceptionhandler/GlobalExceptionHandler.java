@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,16 +25,26 @@ public class GlobalExceptionHandler {
                 .code(errorCode.getCode())
                 .result(null)
                 .build();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(apiResponse);
     }
     @ExceptionHandler(Exception.class)
     ResponseEntity<ApiResponse> handleAppException(RuntimeException ex){
         ApiResponse apiResponse =  ApiResponse.builder()
-                .code(ErrorCode.UNCATEGORIZED_EXITED.getCode())
-                .message(ErrorCode.UNCATEGORIZED_EXITED.getMessage())
+                .code(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode())
+                .message(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage())
                 .result(null)
                 .build();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
+        return ResponseEntity.status(ErrorCode.UNCATEGORIZED_EXCEPTION.getHttpStatus()).body(apiResponse);
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    ResponseEntity<ApiResponse> handleAppException(AccessDeniedException ex){
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+        ApiResponse apiResponse = ApiResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .result(null)
+                .build();
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(apiResponse);
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
@@ -48,6 +59,6 @@ public class GlobalExceptionHandler {
                 .code(errorCode.getCode())
                 .result(null)
                 .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(apiResponse);
     }
 }
