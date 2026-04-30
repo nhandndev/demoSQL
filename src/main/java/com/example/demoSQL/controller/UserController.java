@@ -35,7 +35,6 @@ public class UserController {
             log.info("authority : {}", authority);
         });
         return ApiResponse.<List<UserResponse>>builder()
-                .code(200)
                 .result(userService.getAllUsers())
                 .build();
     }

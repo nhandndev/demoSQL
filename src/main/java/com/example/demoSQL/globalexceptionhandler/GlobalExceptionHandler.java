@@ -5,13 +5,13 @@ import jakarta.validation.constraints.Null;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
-
-import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +40,16 @@ public class GlobalExceptionHandler {
     ResponseEntity<ApiResponse> handleAppException(AccessDeniedException ex){
         ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
         ApiResponse apiResponse = ApiResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .result(null)
+                .build();
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(apiResponse);
+    }
+    @ExceptionHandler(AuthenticationException.class)
+    ResponseEntity<ApiResponse> handleAppException(AuthenticationException ex){
+        ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
+        ApiResponse apiResponse =ApiResponse.builder()
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .result(null)
