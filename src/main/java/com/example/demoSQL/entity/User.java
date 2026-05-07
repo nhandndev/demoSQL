@@ -1,9 +1,6 @@
 package com.example.demoSQL.entity;
-import com.example.demoSQL.entity.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,11 +15,13 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long Id;
+    Long id;
     String username;
     String password;
     String email;
     String firstName;
     String lastName;
-    Set<String> roles;
+
+    @ManyToMany
+    Set<Role> roles;
 }
