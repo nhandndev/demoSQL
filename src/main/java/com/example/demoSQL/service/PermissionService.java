@@ -11,6 +11,8 @@ import lombok.experimental.FieldDefaults;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -21,5 +23,14 @@ public class PermissionService {
        Permission permission = permissionMapper.toPermission(request);
        permission = permissionRepository.save(permission);
        return permissionMapper.toPermissionResponse(permission);
+    }
+    public List<PermissionResponse> getAll(){
+        var permissions = permissionRepository.findAll();
+        return permissions.stream()
+                .map(permissionMapper::toPermissionResponse)
+                .toList();
+    }
+    public void delete(String permission){
+        permissionRepository.deleteById(permission);
     }
 }
