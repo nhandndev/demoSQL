@@ -14,25 +14,27 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.HashSet;
+
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ApplicationInitConfig {
     BCryptPasswordEncoder passwordEncoder;
+
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository) {
-        return args ->{
-            if(userRepository.findByUsername("admin").isEmpty()){
+        return args -> {
+            if (userRepository.findByUsername("admin").isEmpty()) {
                 HashSet<String> roles = new HashSet<>();
                 roles.add(Role.ADMIN.name());
                 User user = User.builder()
                         .username("admin")
                         .password(passwordEncoder.encode("admin"))
-                    //    .roles(roles)
+                        // .roles(roles)
                         .build();
                 userRepository.save(user);
-                log.warn("Admin has been created with UserName : {}" , user.getUsername());
+                log.warn("Admin has been created with UserName : {}", user.getUsername());
             }
         };
     }
