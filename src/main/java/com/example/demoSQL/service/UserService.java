@@ -8,6 +8,7 @@ import com.example.demoSQL.enums.Role;
 import com.example.demoSQL.globalexceptionhandler.AppException;
 import com.example.demoSQL.globalexceptionhandler.ErrorCode;
 import com.example.demoSQL.mapper.UserMapper;
+import com.example.demoSQL.repository.RoleRepository;
 import com.example.demoSQL.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +28,10 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
 public class UserService {
-    @Autowired
     UserRepository userRepository;
-
-    @Autowired
     UserMapper userMapper;
+    BCryptPasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
 
     public UserResponse addUser(UserCreationRequest userCreationRequest) {
         if (userRepository.existsByUsername(userCreationRequest.getUsername())) {
@@ -60,10 +60,13 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
-    public User updateUser(Long id, UserUpdateRequest userUpdateRequest) {
+    public UserResponse updateUser(Long id, UserUpdateRequest userUpdateRequest) {
         User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         userMapper.updateUser(userUpdateRequest, user);
-        return userRepository.save(user);
+        user.setPassword(passwordEncoder.encode(userUpdateRequest.getPassword()));
+        var roles = roleRepository.findAllById(userUpdateRequest.getRoles());
+        user.setRoles(new HashSet<>(roles));
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     public void deleteUserById(Long id) {
