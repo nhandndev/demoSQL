@@ -1,9 +1,12 @@
 package com.example.demoSQL.dto.request;
+import com.example.demoSQL.validator.DobConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,4 +25,7 @@ public class UserCreationRequest {
 
     String firstName;
     String lastName;
+
+    @DobConstraint(min = 18)
+    LocalDate dob;
 }
