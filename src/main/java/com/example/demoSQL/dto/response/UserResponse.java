@@ -4,6 +4,7 @@ import com.example.demoSQL.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Builder
@@ -17,5 +18,6 @@ public class UserResponse {
     String email;
     String firstName;
     String lastName;
+    LocalDate dob;
     Set<RoleResponse> roles;
 }
