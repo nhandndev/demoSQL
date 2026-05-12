@@ -31,7 +31,7 @@ public class ApplicationInitConfig {
                 User user = User.builder()
                         .username("admin")
                         .password(passwordEncoder.encode("admin"))
-                        // .roles(roles)
+                        //.roles(HashSet.newHashSet(roles))
                         .build();
                 userRepository.save(user);
                 log.warn("Admin has been created with UserName : {}", user.getUsername());
