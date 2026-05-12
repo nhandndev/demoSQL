@@ -1,5 +1,6 @@
 package com.example.demoSQL.dto.request;
 
+import com.example.demoSQL.validator.DobConstraint;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ public class UserUpdateRequest {
     String email;
     String firstName;
     String lastName;
+    @DobConstraint(min = 18)
     LocalDate dob;
     List<String> roles;
 }
