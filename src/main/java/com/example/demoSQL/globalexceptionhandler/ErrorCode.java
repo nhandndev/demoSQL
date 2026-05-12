@@ -86,7 +86,11 @@ public enum ErrorCode {
             "TOKEN_INVALID",
             HttpStatus.UNAUTHORIZED
     ),
-
+    DOB_INVALID(
+            1013,
+            "DOB_INVALID",
+            HttpStatus.BAD_GATEWAY
+    ),
     UNCATEGORIZED_EXCEPTION(
             9999,
             "UNCATEGORIZED_EXCEPTION",
