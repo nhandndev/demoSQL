@@ -1,6 +1,7 @@
 package com.example.demoSQL.configuration;
 
 import com.example.demoSQL.enums.Role;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,26 +23,29 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
     JwtAuthenticationEntryPoint authenticationEntryPoint;
     private static final String[] PUBLIC_ENDPOINTS = {
             "/user",
             "/auth/token",
             "/login",
-            "/auth/introspect"
+            "/auth/introspect",
+            "/auth/logout"
     };
     @NonFinal
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
 
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKey = new SecretKeySpec(SIGNER_KEY.getBytes(), "HmacSHA256");
-        return NimbusJwtDecoder
-                .withSecretKey(secretKey)
-                .macAlgorithm(MacAlgorithm.HS256)
-                .build();
-    }
+//    @Bean
+//    public JwtDecoder jwtDecoder() {
+//        SecretKeySpec secretKey = new SecretKeySpec(SIGNER_KEY.getBytes(), "HmacSHA256");
+//        return NimbusJwtDecoder
+//                .withSecretKey(secretKey)
+//                .macAlgorithm(MacAlgorithm.HS256)
+//                .build();
+//    }
+
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
@@ -53,6 +57,9 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
+    private CustomJwtDecoder customJwtDecoder;
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
@@ -63,7 +70,7 @@ public class SecurityConfig {
 
         httpSecurity.csrf(csrf -> csrf.disable());
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
-                .decoder(jwtDecoder())
+                .decoder(customJwtDecoder )
                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
         )

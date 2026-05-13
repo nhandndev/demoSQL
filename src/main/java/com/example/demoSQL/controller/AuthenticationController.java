@@ -3,6 +3,7 @@ package com.example.demoSQL.controller;
 import com.example.demoSQL.dto.ApiResponse;
 import com.example.demoSQL.dto.request.AuthenticationRequest;
 import com.example.demoSQL.dto.request.IntrospectRequest;
+import com.example.demoSQL.dto.request.LogoutRequest;
 import com.example.demoSQL.dto.response.AuthenticationResponse;
 import com.example.demoSQL.dto.response.IntrospectResponse;
 import com.example.demoSQL.service.AuthenticationService;
@@ -30,6 +31,13 @@ public class AuthenticationController {
         var result = authenticationService.introspect(introspectRequest);
         return ApiResponse.<IntrospectResponse>builder()
                 .result(result)
+                .build();
+    }
+    @PostMapping("/logout")
+    ApiResponse<Void> logout(@RequestBody LogoutRequest logoutRequest) throws ParseException, JOSEException {
+        authenticationService.Logout(logoutRequest);
+        return ApiResponse.<Void>builder()
+                .message("succesfully")
                 .build();
     }
 }
