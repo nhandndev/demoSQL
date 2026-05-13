@@ -3,6 +3,7 @@ package com.example.demoSQL.configuration;
 import com.example.demoSQL.enums.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +24,6 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
     JwtAuthenticationEntryPoint authenticationEntryPoint;
     private static final String[] PUBLIC_ENDPOINTS = {
@@ -56,7 +56,7 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
     }
-
+    @Autowired
     private CustomJwtDecoder customJwtDecoder;
 
 
