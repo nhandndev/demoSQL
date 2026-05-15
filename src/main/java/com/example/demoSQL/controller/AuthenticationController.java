@@ -4,6 +4,7 @@ import com.example.demoSQL.dto.ApiResponse;
 import com.example.demoSQL.dto.request.AuthenticationRequest;
 import com.example.demoSQL.dto.request.IntrospectRequest;
 import com.example.demoSQL.dto.request.LogoutRequest;
+import com.example.demoSQL.dto.request.RefreshRequest;
 import com.example.demoSQL.dto.response.AuthenticationResponse;
 import com.example.demoSQL.dto.response.IntrospectResponse;
 import com.example.demoSQL.service.AuthenticationService;
@@ -38,6 +39,13 @@ public class AuthenticationController {
         authenticationService.Logout(logoutRequest);
         return ApiResponse.<Void>builder()
                 .message("succesfully")
+                .build();
+    }
+    @PostMapping("/refresh")
+    ApiResponse<AuthenticationResponse> refresh(@RequestBody RefreshRequest request) throws ParseException, JOSEException {
+        var result = authenticationService.refreshToken(request);
+        return ApiResponse.<AuthenticationResponse>builder()
+                .result(result)
                 .build();
     }
 }

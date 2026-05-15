@@ -31,7 +31,8 @@ public class SecurityConfig {
             "/auth/token",
             "/login",
             "/auth/introspect",
-            "/auth/logout"
+            "/auth/logout",
+            "/auth/refresh"
     };
     @NonFinal
     @Value("${jwt.signerKey}")
