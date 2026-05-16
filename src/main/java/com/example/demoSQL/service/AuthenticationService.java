@@ -32,6 +32,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
@@ -45,6 +47,12 @@ public class AuthenticationService {
     @NonFinal
     @Value("${jwt.signerKey}")
     protected String SIGN_KEY ;
+    @NonFinal
+    @Value("${jwt.valid-duration")
+    protected long VALID_DURATION;
+    @NonFinal
+    @Value("${jwt.refreshable-duration")
+    protected long REFRESHABLE_DURATION;
     UserRepository userRepository;
     public IntrospectResponse introspect(IntrospectRequest introspectRequest)
     throws JOSEException , ParseException {
@@ -80,9 +88,7 @@ public class AuthenticationService {
                 .subject(user.getUsername())
                 .issuer("DoanNgocNhan")
                 .issueTime(new Date())
-                .expirationTime(new Date(
-                        new Date().getTime() + 3600 * 1000
-                ))
+                .expirationTime(new Date(Instant.now().plus(VALID_DURATION,ChronoUnit.SECONDS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
                 .claim("scope",buildScope(user))
                 .build();

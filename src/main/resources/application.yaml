@@ -19,3 +19,5 @@ server:
     context-path: /demosql
 jwt:
   signerKey: 1234567890123456789012345678901234567890123456789012345678901234;
+  valid-duration: 60 #in second
+  refreshable-duration: 120 #in seconds
