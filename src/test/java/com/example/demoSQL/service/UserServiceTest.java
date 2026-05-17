@@ -50,7 +50,7 @@ public class UserServiceTest {
                 .email("email@gmail.com")
                 .build();
 
-        User user = User.builder()
+         user = User.builder()
                 .id(10000L)
                 .dob(dob)
                 .username("username")
