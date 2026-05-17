@@ -23,7 +23,7 @@ public class UserController {
     @PostMapping("/user")
     public ApiResponse<UserResponse> createUser(@Valid @RequestBody UserCreationRequest userCreationRequest) {
         return ApiResponse.<UserResponse>builder()
-                .code(200)
+                .code(1000)
                 .result(userService.addUser(userCreationRequest))
                 .build();
     }
@@ -73,7 +73,7 @@ public class UserController {
     @GetMapping("/user/my-info")
     public ApiResponse<UserResponse> getMyInfo() {
         return ApiResponse.<UserResponse>builder()
-                .code(200)
+                .code(1000)
                 .result(userService.getMyInfo())
                 .build();
     }
