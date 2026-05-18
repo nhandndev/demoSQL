@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,9 +23,9 @@ import java.time.LocalDate;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
+@TestPropertySource("/test.properties")
 public class UserControllerTest {
 
     @MockitoBean
@@ -42,7 +43,7 @@ public class UserControllerTest {
 
     @BeforeEach
     void initData() {
-        dob = LocalDate.of(2020, 1, 1);
+        dob = LocalDate.of(2000, 1, 1);
 
         userCreationRequest = UserCreationRequest.builder()
                 .dob(dob)
@@ -65,18 +66,16 @@ public class UserControllerTest {
 
     @Test
     void createUser_validRequest_success() throws Exception {
-        // GIVEN
         String content = objectMapper.writeValueAsString(userCreationRequest);
-        //WHEN
+
         Mockito.when(userService.addUser(Mockito.any(UserCreationRequest.class)))
                 .thenReturn(userResponse);
 
-        //THEN
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.code").value(1000))
                 .andExpect(jsonPath("$.result.username").value("username"))
                 .andExpect(jsonPath("$.result.firstName").value("firstName"))
                 .andExpect(jsonPath("$.result.lastName").value("lastName"))
